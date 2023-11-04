@@ -1,6 +1,7 @@
 import websockets
 import datetime
 import sqlite3
+import backoff
 import os
 
 twitch_oauth_token = os.environ.get("TWICH_OAUTH_TOKEN")
@@ -28,6 +29,9 @@ def create_logger(channel):
     return conn, c
 
 
+@backoff.on_exception(backoff.expo,
+                      websockets.WebSocketException,
+                      max_time=300)
 async def twitch_chat_listener(db_conn, db_cursor, channel, stream_id):
     uri = server
 

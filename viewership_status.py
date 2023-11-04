@@ -6,7 +6,6 @@ import os
 async def fetch_data(channels):
     twitch_authorization = os.environ.get("TWITCH_AUTHORIZATION")
     twitch_client_id = os.environ.get("TWITCH_CLIENT_ID")
-
     if not twitch_authorization or not twitch_client_id:
         raise EnvironmentError("Twitch API credentials not set in environment variables.")
 
@@ -15,7 +14,6 @@ async def fetch_data(channels):
         'Authorization': f'Bearer {twitch_authorization}',
         'Client-Id': f'{twitch_client_id}'
     }
-
 
     statuses = {}
 

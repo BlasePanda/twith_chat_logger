@@ -1,4 +1,5 @@
 import asyncio
+import aiohttp
 import aioconsole
 from TwitchChatLogger import start_logging_async  # Assuming these are in a module named TwitchChatLogger
 from viewership_status import fetch_data
@@ -6,6 +7,19 @@ import datetime
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+
+# Function to check internet connectivity
+async def is_internet_up():
+    url = "http://www.google.com"
+    timeout = 5
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=timeout) as response:
+                return True
+    except (aiohttp.ClientError, asyncio.TimeoutError, OSError):
+        return False
+
 
 Base = declarative_base()
 
@@ -90,38 +104,34 @@ async def main():
     asyncio.create_task(manage_channels())
 
     while True:
-        # Get a session to the database
-        db = SessionLocal()
+        if await is_internet_up():
+            db = SessionLocal()
+            channels = get_all_channels(db)
+            db.close()
+            channels = [channel[0] for channel in channels]
 
-        # Retrieve all channels from the database
-        channels = get_all_channels(db)
+            statuses = await fetch_data(channels)
+            online_channels = {channel for channel, status in statuses.items()}
 
-        # Close the session
-        db.close()
+            for channel in online_channels:
+                if channel not in logging_tasks:
+                    stream_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                    task = asyncio.create_task(start_logging_async(channel, stream_id))
+                    logging_tasks[channel] = task
 
-        # Convert the result to a list of channel names
-        channels = [channel[0] for channel in channels]
+            for channel in list(logging_tasks):
+                if channel not in online_channels:
+                    logging_tasks[channel].cancel()
+                    del logging_tasks[channel]
 
-        print(1)
-        statuses = await fetch_data(channels)
-        online_channels = {channel for channel, status in statuses.items()}
+            await asyncio.sleep(60)  # Wait for 60 seconds
+        else:
+            print("Internet is down. Waiting for reconnection...")
+            for task in logging_tasks.values():
+                task.cancel()
+            logging_tasks.clear()
+            await asyncio.sleep(5)
 
-        # Start logging tasks for channels that just came online
-        for channel in online_channels:
-            if channel not in logging_tasks:
-                # Create a new stream id
-                stream_id = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-                task = asyncio.create_task(start_logging_async(channel, stream_id))
-                logging_tasks[channel] = task
-
-        # Stop logging tasks for channels that just went offline
-        for channel in list(logging_tasks):
-            if channel not in online_channels:
-                logging_tasks[channel].cancel()
-                del logging_tasks[channel]
-
-        # Wait for a while before checking the status again
-        await asyncio.sleep(60)  # Wait for 60 seconds
 
 if __name__ == "__main__":
     asyncio.run(main())
