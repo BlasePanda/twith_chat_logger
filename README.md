@@ -1,6 +1,6 @@
 # twith_chat_logger
 
-![Tracking Image](https://fe7d-93-136-19-78.ngrok-free.app/image.png?repo=repository-name)
+![Tracking Image](https://fe7d-93-136-19-78.ngrok-free.app/tracking.png?repo=repository-name)
      
 ## Introduction
 
