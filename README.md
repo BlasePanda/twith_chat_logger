@@ -1,6 +1,7 @@
 # twith_chat_logger
-![Tracking Image](http://your-server-address/image.png?repo=repository1)
-    
+
+![Tracking Image](https://fe7d-93-136-19-78.ngrok-free.app/image.png?repo=repository-name)
+     
 ## Introduction
 
 You can log multiple twitch channel at once, program also tracks viewership and current game
