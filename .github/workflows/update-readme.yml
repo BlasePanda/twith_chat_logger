@@ -1,0 +1,25 @@
+name: Update README
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Runs every 10 minutes
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Update README
+      run: |
+        # Replace README.md content and append a new timestamp
+        sed -i 's/\(tracking.png?repo=repository-name&ts=\).*"/\1$(date +%Y%m%d%H%M)"/' README.md
+
+    - name: Commit and push if changed
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git commit -am "Automatically update README" || exit 0
+        git push
