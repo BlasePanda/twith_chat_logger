@@ -14,8 +14,8 @@ jobs:
 
     - name: Update README
       run: |
-        # Replace README.md content and append a new timestamp
-        sed -i 's/\(tracking.png?repo=repository-name&ts=\).*"/\1$(date +%Y%m%d%H%M)"/' README.md
+        sed -i 's/\(tracking.png?repo=repository-name&ts=\)[0-9]*"/\1$(date +%Y%m%d%H%M)"/' README.md
+
 
     - name: Commit and push if changed
       run: |
