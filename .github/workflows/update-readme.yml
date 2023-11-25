@@ -14,7 +14,7 @@ jobs:
 
     - name: Update README
       run: |
-        sed -i.bak 's/\(tracking.png?repo=repository-name&ts=\)[0-9]\{12\}/\1'$(date +%Y%m%d%H%M)'/' README.md
+        sed -i 's/\(tracking.png?repo=repository-name&ts=\)[0-9]\{12\}/\1'$(date +%Y%m%d%H%M)'/' README.md
 
 
     - name: Commit and push if changed
