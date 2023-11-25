@@ -22,4 +22,4 @@ jobs:
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
         git commit -am "Automatically update README" || exit 0
-        git push https://${{ secrets.MY_PAT }}@github.com/BlasePanda/twith_chat_logger.git
+        git push https://${{ secrets.GAT }}@github.com/BlasePanda/twith_chat_logger.git
