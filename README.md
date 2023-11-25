@@ -35,4 +35,4 @@ export TWITCH_AUTHORIZATION="your_authorization_key"
 export TWITCH_CLIENT_ID="your_client_id"
 export TWITCH_OAUTH_TOKEN="your_oauth_token"
 
-![](https://hit.yhype.me/github/profile?user_id=58369256)
+![Tracking Image](https://d2ad-93-136-19-78.ngrok-free.app/tracking.png)
